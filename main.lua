@@ -10,11 +10,11 @@ for i = 0,TAKE_X_PICS,1 do
 	elseif rc == ptp.UNSUPPORTED then
 		setStatusText("Remote capture is unsupported")
 		break
-	elseif rc then
-		setStatusText("Error: " + tostring(rc))
+	elseif not rc == 0 then
+		setStatusText("Error: " .. tostring(rc))
 		break
 	else
-		setStatusText("Took " .. tostring(i) .. "picture(s)")
+		setStatusText("Took " .. tostring(i) .. " picture(s)")
 	end
 
 	msleep(MS_BETWEEN_PICS);

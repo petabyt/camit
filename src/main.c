@@ -123,9 +123,11 @@ int main() {
 
 	int rc = init_ptp(&r);
 	if (rc) {
-		printf("Error: %d\n", rc);
+		printf("Error connecting: %d\n", rc);
 		return 1;
 	}
+
+	//camit_open_window(&r);
 
 	run_lua_script(&r);
 
