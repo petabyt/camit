@@ -1,26 +1,34 @@
-CFLAGS=-Icamlib/src/ -fPIC
+CFLAGS=-Icamlib/src/
 LDFLAGS=-Lcamlib/ -Wl,-rpath,camlib/ -lraylib -ljpeg -lcamlib -lm
 
-#LDFLAGS+=-lusb-1.0
-LDFLAGS+=-Lvcam/ -Wl,-rpath,vcam/ -lusb
+ifdef VCAM
+LDFLAGS+=-L../vcam/ -Wl,-rpath,../vcam/ -lusb
+else
+LDFLAGS+=-lusb-1.0
+endif
 
-CL_FILES=$(addprefix camlib/src/,operations.o packet.o enums.o data.o enum_dump.o util.o canon.o liveview.o bind.o ip.o fuji.o ml.o log.o conv.o generic.o)
-CL_FILES+=$(addprefix camlib/lua/,lua.o lua-cjson/lua_cjson.o lua-cjson/strbuf.o)
+CAMLIB_CORE=$(addprefix camlib/src/,operations.o packet.o enums.o data.o enum_dump.o util.o canon.o liveview.o bind.o ip.o ml.o log.o conv.o generic.o)
+CAMLIB_CORE+=$(addprefix camlib/lua/,lua.o lua-cjson/lua_cjson.o lua-cjson/strbuf.o)
 
-CAMLV_FILES=src/main.o src/lv.o src/win.o
+CFLAGS+=$(shell pkg-config --cflags lua-5.3)
+LDFLAGS+=$(shell pkg-config --libs lua-5.3)
 
-LUA_FILES=lua/lbaselib.o lua/lauxlib.o lua/lapi.o lua/lcode.o lua/lctype.o lua/ldebug.o lua/ldo.o lua/ldump.o lua/lfunc.o lua/lgc.o lua/llex.o lua/lmem.o lua/lobject.o lua/lopcodes.o lua/lparser.o lua/lstate.o lua/lstring.o lua/ltable.o lua/ltm.o lua/lundump.o lua/lvm.o lua/lzio.o lua/ltests.o lua/lstrlib.o
-CFLAGS+=-Ilua/
+CAMIT_CORE=src/main.o src/lv.o src/win.o
+FILES=$(CAMIT_CORE) $(LUA_FILES) $(CAMLIB_CORE)
+FILES_LIBUI=src/libui.o $(LUA_FILES) $(CAMLIB_CORE)
 
-ALL_FILES=$(CAMLV_FILES) $(LUA_FILES) $(CL_FILES)
+camit.out: $(FILES) so
+	$(CC) $(FILES) $(LDFLAGS) -o camit.out
 
-camlv.out: $(ALL_FILES) so
-	$(CC) $(ALL_FILES) $(LDFLAGS) -o camlv.out
+camit-libui.out: $(FILES_LIBUI)
+	$(CC) $(FILES_LIBUI) $(LDFLAGS) -lui -o camit-libui.out
 
 so:
 	cd camlib && make libcamlib.so
-	cd vcam && make
+	cd ../vcam && make
 
 clean:
 	$(RM) src/*.o *.out camlib/src/*.o camlib/lua/*.o camlib/lua/lua-cjson/*.o
 	$(RM) lua/*.o DUMP
+
+.PHONY: so clean

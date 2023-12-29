@@ -38,13 +38,14 @@ static int lua_script_set_status(lua_State *L) {
 
 lua_State *cam_lua_state() {
 	lua_State *L = luaL_newstate();
-	luaopen_ptp(L);
 	luaopen_base(L);
 	luaopen_cjson(L);
 	lua_register(L, "setStatusText", lua_script_set_status);
 	lua_register(L, "print", lua_script_print);
 	lua_register(L, "msleep", lua_script_msleep);
+
 	luaL_requiref(L, "ptp", luaopen_ptp, 1);
+	luaL_requiref(L, "json", luaopen_cjson, 1);
 	luaL_requiref(L, "string", luaopen_string, 1);
 	return L;
 }
@@ -98,7 +99,7 @@ static int deinit_ptp(struct PtpRuntime *r) {
 static int run_lua_script(struct PtpRuntime *r) {
 	lua_State *L = cam_lua_state();
 
-	int rc = luaL_loadfile(L, "main.lua");
+	int rc = luaL_loadfile(L, "test.lua");
 	if (rc == LUA_ERRFILE) {
 		puts("File not found");
 		return 1;

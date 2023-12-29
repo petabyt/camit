@@ -1,3 +1,11 @@
-# camit
-This is a very basic desktop/CLI of [cam](https://cam.clutchlink.com/) made with Raylib and RayGUI. It's intended to be a very
-fast and optimized liveview for PTP/USB cameras, and an alternative to Entangle/gPhoto2.
+# Camit
+Camit (CAMera InTervalometer) is a free app that can be used to control digital cameras.
+
+This is the free and open-source version of [Cam](https://danielc.dev/cam/) made using LibUI. This app
+has a bunch more limited scope, and primarly serves as an intervalometer and remote shutter. It can also run scripts
+and perform basic actions.
+
+- [x] Test Lua scripts 
+- [ ] Basic LibUI app
+- [ ] Basic intervalometer
+- [ ] Android App (legacy CamControl Intervalometer)
