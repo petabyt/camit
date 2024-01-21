@@ -41,7 +41,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
-
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -58,7 +57,7 @@ public class LibUI {
 
     public static Boolean useActionBar = true;
 
-    public static void start(Activity act) {
+    public static void start(AppCompatActivity act) {
         ctx = (Context)act;
         waitUntilActivityLoaded(act);
     }
@@ -176,32 +175,6 @@ public class LibUI {
         entry.addView(child);
 
         ((LinearLayout)form).addView(entry);
-    }
-
-    public static View button(String text) {
-        Button b = new Button(ctx);
-
-        if (buttonBackgroundResource != 0) {
-            b.setBackground(ContextCompat.getDrawable(ctx, buttonBackgroundResource));
-        }
-
-        b.setLayoutParams(new LinearLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT,
-                1.0f
-        ));
-
-        b.setTextSize(14f);
-
-        b.setText(text);
-        return (View)b;
-    }
-
-    public static View label(String text) {
-        TextView lbl = new TextView(ctx);
-        lbl.setText(text);
-        lbl.setTextSize(15f);
-        return (View)lbl;
     }
 
     public static View tabLayout() {
@@ -375,9 +348,9 @@ public class LibUI {
         public void setChild(View v) {
             LinearLayout rel = new LinearLayout(ctx);
 
-            actionBar = ((AppCompatActivity)ctx).getSupportActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(title);
+//            actionBar = ((AppCompatActivity)ctx).getSupportActionBar();
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//            actionBar.setTitle(title);
 
             LinearLayout bar = new LinearLayout(ctx);
             rel.setPadding(10, 10, 10, 10);
@@ -455,7 +428,7 @@ public class LibUI {
                     (int)(height / 1.2)
             );
 
-            this.popupWindow.setOutsideTouchable(false);
+            this.popupWindow.setOutsideTouchable(true);
         }
     }
 
@@ -471,25 +444,16 @@ public class LibUI {
     private static ViewGroup linearLayout(int orientation) {
         LinearLayout layout = new LinearLayout(ctx);
         layout.setOrientation(orientation);
-        layout.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
+        layout.setLayoutParams(new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT, // Android says use 0dp for better perf
+                1.0f
+        ));
         return (ViewGroup)layout;
     }
 
     private static void setPadding(View v, int l, int t, int r, int b) {
         v.setPadding(l, t, r, b);
-    }
-
-    private static String getString(String name) {
-        Resources res = ctx.getResources();
-        return res.getString(res.getIdentifier(name, "string", ctx.getPackageName()));
-    }
-
-    private static View getView(String name) {
-        Resources res = ctx.getResources();
-        int id = res.getIdentifier(name, "id", ctx.getPackageName());
-        return ((Activity)ctx).findViewById(id);
     }
 
     private static void toast(String text) {
